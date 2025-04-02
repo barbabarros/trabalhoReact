@@ -1,12 +1,84 @@
-# React + Vite
+# Trabalho React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este é um projeto React desenvolvido com Vite.
 
-Currently, two official plugins are available:
+## Pré-requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Antes de começar, certifique-se de ter instalado em sua máquina:
+- [Node.js](https://nodejs.org/) (versão 14.x ou superior)
+- [npm](https://www.npmjs.com/) (geralmente vem com o Node.js) ou [yarn](https://yarnpkg.com/)
 
-## Expanding the ESLint configuration
+## Como instalar
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Siga os passos abaixo para instalar e configurar o projeto:
+
+1. Clone o repositório:
+   ```bash
+   git clone [URL do repositório]
+   ```
+   
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd trabalhoReact
+   ```
+   
+3. Instale as dependências:
+   ```bash
+   npm install
+   ```
+   ou, se você estiver usando yarn:
+   ```bash
+   yarn
+   ```
+
+## Como executar
+
+Após a instalação, você pode executar o projeto localmente:
+
+### Ambiente de desenvolvimento
+
+Para iniciar o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+ou
+```bash
+yarn dev
+```
+
+O servidor de desenvolvimento estará disponível em `http://localhost:5173` por padrão.
+
+### Build para produção
+
+Para criar uma versão de produção:
+
+```bash
+npm run build
+```
+ou
+```bash
+yarn build
+```
+
+### Executar a versão de produção localmente
+
+Para pré-visualizar a versão de produção:
+
+```bash
+npm run preview
+```
+ou
+```bash
+yarn preview
+```
+
+## Estrutura do projeto
+
+Foi implementado tudo em um único componente para facilitar.
+
+## Tecnologias utilizadas
+
+- React
+- Vite
+
