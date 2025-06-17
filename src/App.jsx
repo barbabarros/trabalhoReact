@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import TokenInput from './components/TokenInput';
 
 function App() {
   const [estados, setEstados] = useState([]);
@@ -21,6 +22,8 @@ function App() {
 
   const [snackbar, setSnackbar] = useState({ visivel: false, messagem: '', erro: false });
 
+  const [jwtToken, setJwtToken] = useState('');
+
   const API_URL = 'http://localhost:5026';
 
   useEffect(() => {
@@ -28,7 +31,8 @@ function App() {
     carregarCidades();
     carregarLinhasOnibus();
     carregarOnibus();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jwtToken]);
 
   const mostrarMensagem = (messagem, erro = false) => {
     setSnackbar({ visivel: true, messagem: messagem, erro: erro });
@@ -40,18 +44,30 @@ function App() {
   //#region FUNÇÕES
   // Funções para Estados
   const carregarEstados = async () => {
+    if (!jwtToken) {
+      return;
+    }
     try {
-      const response = await fetch(`${API_URL}/estados`);
+      const response = await fetchAutorizado(`${API_URL}/estados`);
+      if (!response.ok) {
+        console.error('Erro na resposta:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('Conteúdo da resposta:', errorText);
+        mostrarMensagem(`Erro ao carregar estados: ${response.status}`, true);
+        return;
+      }
       const data = await response.json();
       setEstados(data);
     } catch (error) {
       console.error('Erro ao carregar estados:', error);
+      mostrarMensagem('Erro ao carregar estados. Verifique o token.', true);
     }
   };
 
   const adicionarEstado = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/estados`, {
+      const response = await fetchAutorizado(`${API_URL}/estados`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoEstado)
@@ -67,8 +83,9 @@ function App() {
   };
 
   const atualizarEstado = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/estados/${editandoEstado.id}`, {
+      const response = await fetchAutorizado(`${API_URL}/estados/${editandoEstado.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoEstado)
@@ -85,11 +102,11 @@ function App() {
   };
 
   const excluirEstado = async (id) => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/estados/${id}`, {
+      const response = await fetchAutorizado(`${API_URL}/estados/${id}`, {
         method: 'DELETE'
       });
-
       if (response.ok) {
         carregarEstados();
         mostrarMensagem('Estado excluído com sucesso!');
@@ -104,18 +121,26 @@ function App() {
 
   // Funções para Cidades
   const carregarCidades = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/cidades`);
+      const response = await fetchAutorizado(`${API_URL}/cidades`);
+      if (!response.ok) {
+        console.error('Erro na resposta:', response.status, response.statusText);
+        mostrarMensagem(`Erro ao carregar cidades: ${response.status}`, true);
+        return;
+      }
       const data = await response.json();
       setCidades(data);
     } catch (error) {
       console.error('Erro ao carregar cidades:', error);
+      mostrarMensagem('Erro ao carregar cidades. Verifique o token.', true);
     }
   };
 
   const adicionarCidade = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/cidades`, {
+      const response = await fetchAutorizado(`${API_URL}/cidades`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaCidade)
@@ -131,8 +156,9 @@ function App() {
   };
 
   const atualizarCidade = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/cidades/${editandoCidade.id}`, {
+      const response = await fetchAutorizado(`${API_URL}/cidades/${editandoCidade.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaCidade)
@@ -149,11 +175,11 @@ function App() {
   };
 
   const excluirCidade = async (id) => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/cidades/${id}`, {
+      const response = await fetchAutorizado(`${API_URL}/cidades/${id}`, {
         method: 'DELETE'
       });
-
       if (response.ok) {
         carregarCidades();
         mostrarMensagem('Cidade excluída com sucesso!');
@@ -168,18 +194,26 @@ function App() {
 
   // Funções para Linhas de Ônibus
   const carregarLinhasOnibus = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/linhasonibus`);
+      const response = await fetchAutorizado(`${API_URL}/linhasonibus`);
+      if (!response.ok) {
+        console.error('Erro na resposta:', response.status, response.statusText);
+        mostrarMensagem(`Erro ao carregar linhas de ônibus: ${response.status}`, true);
+        return;
+      }
       const data = await response.json();
       setLinhasOnibus(data);
     } catch (error) {
       console.error('Erro ao carregar linhas de ônibus:', error);
+      mostrarMensagem('Erro ao carregar linhas de ônibus. Verifique o token.', true);
     }
   };
 
   const adicionarLinhaOnibus = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/linhasonibus`, {
+      const response = await fetchAutorizado(`${API_URL}/linhasonibus`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaLinhaOnibus)
@@ -195,8 +229,9 @@ function App() {
   };
 
   const atualizarLinhaOnibus = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/linhasonibus/${editandoLinhaOnibus.id}`, {
+      const response = await fetchAutorizado(`${API_URL}/linhasonibus/${editandoLinhaOnibus.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaLinhaOnibus)
@@ -213,8 +248,9 @@ function App() {
   };
 
   const excluirLinhaOnibus = async (id) => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/linhasonibus/${id}`, {
+      const response = await fetchAutorizado(`${API_URL}/linhasonibus/${id}`, {
         method: 'DELETE'
       });
 
@@ -232,18 +268,26 @@ function App() {
 
   // Funções para Ônibus
   const carregarOnibus = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/onibus`);
+      const response = await fetchAutorizado(`${API_URL}/onibus`);
+      if (!response.ok) {
+        console.error('Erro na resposta:', response.status, response.statusText);
+        mostrarMensagem(`Erro ao carregar ônibus: ${response.status}`, true);
+        return;
+      }
       const data = await response.json();
       setOnibus(data);
     } catch (error) {
       console.error('Erro ao carregar ônibus:', error);
+      mostrarMensagem('Erro ao carregar ônibus. Verifique o token.', true);
     }
   };
 
   const adicionarOnibus = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/onibus`, {
+      const response = await fetchAutorizado(`${API_URL}/onibus`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoOnibus)
@@ -259,8 +303,9 @@ function App() {
   };
 
   const atualizarOnibus = async () => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/onibus/${editandoOnibus.id}`, {
+      const response = await fetchAutorizado(`${API_URL}/onibus/${editandoOnibus.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoOnibus)
@@ -277,11 +322,11 @@ function App() {
   };
 
   const excluirOnibus = async (id) => {
+    if (!jwtToken) return;
     try {
-      const response = await fetch(`${API_URL}/onibus/${id}`, {
+      const response = await fetchAutorizado(`${API_URL}/onibus/${id}`, {
         method: 'DELETE'
       });
-
       if (response.ok) {
         carregarOnibus();
         mostrarMensagem('Ônibus excluído com sucesso!');
@@ -314,10 +359,26 @@ function App() {
     setNovoOnibus({ placa: onibus.placa, linhaOnibusId: onibus.linhaOnibusId });
     setEditandoOnibus(onibus);
   };
+
+  const handleTokenChange = (token) => {
+    setJwtToken(token);
+  };
+
+  const fetchAutorizado = async (url, options = {}) => {
+    if (!jwtToken) throw new Error('Token JWT não informado.');
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+  };
   //#endregion
   //#region COMPONENTE
   return (
     <div className="container">
+      <TokenInput onTokenChange={handleTokenChange} />
       <h1>Sistema de Gerenciamento de Ônibus</h1>
 
       {/* Navegação */}
